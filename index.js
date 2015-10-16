@@ -1,36 +1,101 @@
+/* global ace, $ */
 (function() {
     'use strict';
 
-    ace.require("ace/ext/language_tools");
+    var scriptTarget,
+        editor,
+        editorHTML;
 
-    var editor = ace.edit('editor');
-    editor.setTheme('ace/theme/cobalt');
-    editor.getSession().setMode('ace/mode/javascript');
-    editor.setOption('enableBasicAutocompletion', true);
+    function setIFrame(html) {
+        var iframe = $('#preview')[0];
+        iframe = iframe.contentDocument || iframe.contentWindow.document;
+        iframe.open();
+        iframe.write(html);
+        iframe.close();
+    }
 
-    var editorHTML = ace.edit('editorHTML');
-    editorHTML.setTheme('ace/theme/cobalt');
-    editorHTML.getSession().getMode('ace/mode/html');
-    editorHTML.setOption('enableBasicAutocompletion', true);
+    function runSetup() {
+        var currentHTML = editorHTML.getSession().getValue();
+        var currentJS = editor.getSession().getValue();
+        if (currentHTML === 'Loading ...' || currentJS === 'Loading ...') { return; }
 
-    var iFrame = d3.select('#preview').node();
+        // Find reference to script
+        var startIndex = currentHTML.indexOf('<script src="' + scriptTarget + '"');
+        var endIndex = currentHTML.indexOf('</script>', startIndex);
+        var merged = currentHTML.substr(0, startIndex);
+        merged += '<script type="text/javascript">';
+        merged += currentJS;
+        merged += currentHTML.substr(endIndex);
+
+        setIFrame(merged);
+    }
 
     function loadScript(scriptName) {
-        d3.text('/examples/' + scriptName + '.js', function(text) {
-            editor.setValue(text);
-        });
+        scriptTarget = scriptName + '.js';
 
-        d3.text('/examples/' + scriptName + '.html', function(html) {
-            editorHTML.setValue(html);
+        // Clear Out Everything
+        editor.setReadOnly(true);
+        editor.getSession().setValue('Loading ...');
+        editorHTML.getSession().setValue('Loading ...');
+        editorHTML.setReadOnly(true);
+        setIFrame('<HTML><Body>Loading ...</Body></HTML>');
+
+        $.ajax({
+            url: '/examples/' + scriptTarget,
+            success: function(jsCode) {
+                editor.getSession().setValue(jsCode);
+                editor.setReadOnly(false);
+                runSetup();
+            },
+            dataType: 'html'});
+
+        $.get('/examples/' + scriptName + '.html', function(html) {
+            editorHTML.getSession().setValue(html);
+            editorHTML.setReadOnly(false);
+            runSetup();
         });
     }
 
-    // Connect Examples
-    var examples = d3.select('#examples');
-    examples
-        .on('change', function() {
-            loadScript(examples.property('value'))
+    $(function() {
+        ace.require('ace/ext/language_tools');
+
+        editor = ace.edit('editor');
+        editor.setTheme('ace/theme/cobalt');
+        editor.getSession().setMode('ace/mode/javascript');
+        editor.setOption('enableBasicAutocompletion', true);
+        editor.getSession().on('change', function(e) {
+            if ($('#btnAuto').hasClass('active')) {
+                runSetup();
+            }
         });
 
-    loadScript('barChart');
+        editorHTML = ace.edit('editorHTML');
+        editorHTML.setTheme('ace/theme/cobalt');
+        editorHTML.getSession().setMode('ace/mode/html');
+        editorHTML.setOption('enableBasicAutocompletion', true);
+        editorHTML.getSession().on('change', function(e) {
+            if ($('#btnAuto').hasClass('active')) {
+                runSetup();
+            }
+        });
+
+
+        // Connect Buttons
+        $('#btnRun').on('click', function(e) {
+            e.preventDefault();
+            runSetup();
+        });
+        $('#btnAuto').on('click', function(e) {
+            e.preventDefault();
+            $(this).toggleClass('active');
+            runSetup();
+        });
+        $('a.example').on('click', function(e) {
+            e.preventDefault();
+            loadScript($(this).data('target'));
+        });
+
+        loadScript('barChart');
+        $('#main').toggleClass('hidden', false);
+    });
 }());

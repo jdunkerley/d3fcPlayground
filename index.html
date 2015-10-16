@@ -4,22 +4,21 @@
     <meta charset="UTF-8">
     <title></title>
 
-    <style type="text/css" media="screen">
+    <style type="text/css">
         .editors {
             height: 300px;
         }
 
         #preview {
-            height: 600px;
+            height: 700px;
             width: 100%;
         }
     </style>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/d3fc/1.5.0/d3fc.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 <body>
-
     <nav class="navbar navbar-default">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -29,49 +28,52 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> D3FC</a>
+            <a class="navbar-brand" href="#"><i class="fa fa-area-chart"></i> D3FC</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="toolbar">
             <ul class="nav navbar-nav">
-                <li id="btnRun"><a href=""><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Run</a></li>
-                <li id="btnTidyUp"><a href=""><span class="glyphicon glyphicon-flash" aria-hidden="true"></span> TidyUp</a></li>
-                <li id="btnTogether"><a href=""><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> Collaborate</button></li>
+                <li id="btnRun"><a href=""><i class="fa fa-play"></i> Run</a></li>
+                <li id="btnAuto"><a href=""><i class="fa fa-forward"></i> AutoRun</a></li>
+                <!--<li id="btnTidyUp"><a href=""><span class="glyphicon glyphicon-flash" aria-hidden="true"></span> TidyUp</a></li>-->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Examples <b class="caret"></b></a>
+                    <ul role="menu" class="dropdown-menu">
+                        <li><a href="#" class="example" data-target="barChart">Bar Chart</a></li>
+                        <!--<li><a href="#" class="example" data-target="lineChart">Line Chart</a></li>
+                        <li><a href="#" class="example" data-target="candlestick">Candlestick</a></li>-->
+                    </ul>
+                </li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-12">
-                <form class="form-inline">
-                    <label for="examples">Examples:</label>
-                    <select id="examples">
-                        <option value="barChart">Bar Chart</option>
-                        <option value="lineChart">Line Chart</option>
-                        <option value="candlestick">Candlestick</option>
-                    </select>
-                </form>
-            </div>
-        </div>
+    <div class="container-fluid" id="main" class="hidden">
         <div class="row">
             <div class="col-md-6 col-md-push-6">
                 <iframe id="preview">
                 </iframe>
             </div>
             <div class="col-md-6 col-md-pull-6">
-                <h2>HTML:</h3>
-                <div id="editorHTML" class="editors"></div>
-                <h3>JavaScript:</h3>
-                <div id="editor" class="editors"></div>
+                <div class="editorContainer">
+                    <h2>HTML:</h3>
+                    <div id="editorHTML" class="editors">
+Loading ...
+                    </div>
+                </div>
+                <div class="editorContainer">
+                    <h3>JavaScript:</h3>
+                    <div id="editor" class="editors">
+Loading ...
+                    </div>
+                <div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/css-layout/1.0.0/css-layout.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3fc/1.5.0/d3fc.js"></script>
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="ace/ace.js"></script>
     <script src="ace/ext-language_tools.js"></script>
     <script src="index.js"></script>
