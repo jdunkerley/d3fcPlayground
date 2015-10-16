@@ -1,1 +1,5 @@
-d3.
+(function() {
+	'use strict';
+	
+	alert('Hello World');
+}());
