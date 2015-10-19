@@ -41,7 +41,7 @@
         setIFrame('<HTML><Body>Loading ...</Body></HTML>');
 
         $.ajax({
-            url: 'examples/' + scriptTarget,
+            url: '  examples/' + scriptTarget,
             success: function(jsCode) {
                 editor.getSession().setValue(jsCode);
                 editor.setReadOnly(false);
