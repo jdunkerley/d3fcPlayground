@@ -51,7 +51,9 @@
             },
             dataType: 'html'});
 
-        $.get('examples/' + scriptName + '.html', function(html) {
+        $.get('/examples/' + scriptName + '.html', function(html) {
+            html = html.replace(/\$version/g, '2.1.1');
+
             // Switch to local d3fc if available
             if (useLocalD3FC) {
                 html = html.replace(/"https:([^"])*\/d3fc.min.css"/, '"http://localhost:8000/assets/d3fc.css"');
