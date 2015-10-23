@@ -108,8 +108,8 @@
         });
         $('a.theme').on('click', function(e) {
             e.preventDefault();
-            editor.setTheme('ace/theme/' + $(this).html().replace(/ /g,'_'));
-            editorHTML.setTheme('ace/theme/' + $(this).html().replace(/ /g,'_'));
+            editor.setTheme('ace/theme/' + $(this).data('target'));
+            editorHTML.setTheme('ace/theme/' + $(this).data('target'));
         });
 
         var target =  document.URL.match(/[?&]example=([^&]*)/i) || ['','barChart'];
