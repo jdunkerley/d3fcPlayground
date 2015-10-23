@@ -43,7 +43,7 @@
         setIFrame('<HTML><Body>Loading ...</Body></HTML>');
 
         $.ajax({
-            url: '/examples/' + scriptTarget,
+            url: 'examples/' + scriptTarget,
             success: function(jsCode) {
                 editor.getSession().setValue(jsCode);
                 editor.setReadOnly(false);
@@ -51,7 +51,7 @@
             },
             dataType: 'html'});
 
-        $.get('/examples/' + scriptName + '.html', function(html) {
+        $.get('examples/' + scriptName + '.html', function(html) {
             html = html.replace(/\$version/g, '2.1.1');
 
             // Switch to local d3fc if available
