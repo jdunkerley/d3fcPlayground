@@ -2,6 +2,8 @@
 (function() {
     'use strict';
 
+    var useLocalD3FC = document.URL.match(/[?&]local([&=]|$)/i);
+
     var scriptTarget,
         editor,
         editorHTML;
@@ -9,7 +11,7 @@
     function setIFrame(html) {
         var iframe = $('#preview')[0];
         iframe = iframe.contentDocument || iframe.contentWindow.document;
-        iframe.open();
+        iframe.open('text/html', 'replace');
         iframe.write(html);
         iframe.close();
     }
@@ -50,6 +52,12 @@
             dataType: 'html'});
 
         $.get('/examples/' + scriptName + '.html', function(html) {
+            // Switch to local d3fc if available
+            if (useLocalD3FC) {
+                html = html.replace(/"https:([^"])*\/d3fc.min.css"/, '"http://localhost:8000/assets/d3fc.css"');
+                html = html.replace(/"https:([^"])*\/d3fc.min.js"/, '"http://localhost:8000/assets/d3fc.js"');
+            }
+
             editorHTML.getSession().setValue(html);
             editorHTML.setReadOnly(false);
             runSetup();
@@ -60,7 +68,7 @@
         ace.require('ace/ext/language_tools');
 
         editor = ace.edit('editor');
-        editor.setTheme('ace/theme/cobalt');
+        editor.setTheme('ace/theme/crimson_editor');
         editor.getSession().setMode('ace/mode/javascript');
         editor.setOption('enableBasicAutocompletion', true);
         editor.getSession().on('change', function(e) {
@@ -70,7 +78,7 @@
         });
 
         editorHTML = ace.edit('editorHTML');
-        editorHTML.setTheme('ace/theme/cobalt');
+        editorHTML.setTheme('ace/theme/crimson_editor');
         editorHTML.getSession().setMode('ace/mode/html');
         editorHTML.setOption('enableBasicAutocompletion', true);
         editorHTML.getSession().on('change', function(e) {
@@ -79,6 +87,10 @@
             }
         });
 
+
+        // Crimson Editor (light)
+        // Cobalt (blue)
+        // Teminal (dark)
 
         // Connect Buttons
         $('#btnRun').on('click', function(e) {
@@ -94,8 +106,14 @@
             e.preventDefault();
             loadScript($(this).data('target'));
         });
+        $('a.theme').on('click', function(e) {
+            e.preventDefault();
+            editor.setTheme('ace/theme/' + $(this).html().replace(/ /g,'_'));
+            editorHTML.setTheme('ace/theme/' + $(this).html().replace(/ /g,'_'));
+        });
 
-        loadScript('barChart');
+        var target =  document.URL.match(/[?&]example=([^&]*)/i) || ['','barChart'];
+        loadScript(target[1]);
         $('#main').toggleClass('hidden', false);
     });
 }());
