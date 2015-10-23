@@ -110,9 +110,18 @@
         });
         $('a.theme').on('click', function(e) {
             e.preventDefault();
-            editor.setTheme('ace/theme/' + $(this).data('target'));
-            editorHTML.setTheme('ace/theme/' + $(this).data('target'));
+            var theme = $(this).data('target');
+            editor.setTheme('ace/theme/' + theme);
+            editorHTML.setTheme('ace/theme/' + theme);
+            if (window.localStorage) {
+                window.localStorage.setItem('theme', theme)
+            }
         });
+
+        if (window.localStorage && window.localStorage.getItem('theme')) {
+            editor.setTheme('ace/theme/' + window.localStorage.getItem('theme'));
+            editorHTML.setTheme('ace/theme/' + window.localStorage.getItem('theme'));
+        }
 
         var target =  document.URL.match(/[?&]example=([^&]*)/i) || ['','barChart'];
         loadScript(target[1]);
