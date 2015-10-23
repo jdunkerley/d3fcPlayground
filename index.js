@@ -52,7 +52,7 @@
             dataType: 'html'});
 
         $.get('examples/' + scriptName + '.html', function(html) {
-            html = html.replace(/\$version/g, '2.1.1');
+            html = html.replace(/\$version/g, '3.0.0');
 
             // Switch to local d3fc if available
             if (useLocalD3FC) {
