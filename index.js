@@ -71,6 +71,7 @@
 
         editor = ace.edit('editor');
         editor.setTheme('ace/theme/crimson_editor');
+        editor.setShowPrintMargin(false);
         editor.getSession().setMode('ace/mode/javascript');
         editor.setOption('enableBasicAutocompletion', true);
         editor.getSession().on('change', function(e) {
@@ -81,6 +82,7 @@
 
         editorHTML = ace.edit('editorHTML');
         editorHTML.setTheme('ace/theme/crimson_editor');
+        editorHTML.setShowPrintMargin(false);
         editorHTML.getSession().setMode('ace/mode/html');
         editorHTML.setOption('enableBasicAutocompletion', true);
         editorHTML.getSession().on('change', function(e) {
