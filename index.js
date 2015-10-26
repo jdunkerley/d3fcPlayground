@@ -1,15 +1,16 @@
-/* global ace, $ */
+/* global ace, d3 */
 (function() {
     'use strict';
 
     var useLocalD3FC = document.URL.match(/[?&]local([&=]|$)/i);
+    var autoRun = false;
 
     var scriptTarget,
         editor,
         editorHTML;
 
     function setIFrame(html) {
-        var iframe = $('#preview')[0];
+        var iframe = document.getElementById('preview');
         iframe = iframe.contentDocument || iframe.contentWindow.document;
         iframe.open('text/html', 'replace');
         iframe.write(html);
@@ -19,7 +20,9 @@
     function runSetup() {
         var currentHTML = editorHTML.getSession().getValue();
         var currentJS = editor.getSession().getValue();
-        if (currentHTML === 'Loading ...' || currentJS === 'Loading ...') { return; }
+        if (currentHTML === 'Loading ...' || currentJS === 'Loading ...') {
+            return;
+        }
 
         currentHTML = currentHTML.replace('<body>', '<body style="margin:0">')
 
@@ -44,79 +47,94 @@
         editorHTML.setReadOnly(true);
         setIFrame('<HTML><Body>Loading ...</Body></HTML>');
 
-        $.ajax({
-            url: 'examples/' + scriptTarget,
-            success: function(jsCode) {
+        d3.text('examples/' + scriptTarget,
+            'text/plain',
+            function(jsCode) {
                 editor.getSession().setValue(jsCode);
                 editor.setReadOnly(false);
                 runSetup();
-            },
-            dataType: 'html'});
+            });
 
-        $.get('examples/' + scriptName + '.html', function(html) {
-            html = html.replace(/\$version/g, '2.1.1');
+        d3.text('examples/' + scriptName + '.html',
+            'text/plain',
+            function(html) {
+                html = html.replace(/\$version/g, '2.1.1');
 
-            // Switch to local d3fc if available
-            if (useLocalD3FC) {
-                html = html.replace(/"https:([^"])*\/d3fc.min.css"/, '"http://localhost:8000/assets/d3fc.css"');
-                html = html.replace(/"https:([^"])*\/d3fc.min.js"/, '"http://localhost:8000/assets/d3fc.js"');
-            }
+                // Switch to local d3fc if available
+                if (useLocalD3FC) {
+                    html = html.replace(/"https:([^"])*\/d3fc.min.css"/, '"http://localhost:8000/assets/d3fc.css"');
+                    html = html.replace(/"https:([^"])*\/d3fc.min.js"/, '"http://localhost:8000/assets/d3fc.js"');
+                }
 
-            editorHTML.getSession().setValue(html);
-            editorHTML.setReadOnly(false);
-            runSetup();
-        });
+                editorHTML.getSession().setValue(html);
+                editorHTML.setReadOnly(false);
+                runSetup();
+            });
     }
 
-    $(function() {
+    document.addEventListener('DOMContentLoaded', function() {
         ace.require('ace/ext/language_tools');
 
         editor = ace.edit('editor');
+        editor.$blockScrolling = Infinity;
         editor.setTheme('ace/theme/crimson_editor');
         editor.setShowPrintMargin(false);
         editor.getSession().setMode('ace/mode/javascript');
         editor.setOption('enableBasicAutocompletion', true);
         editor.getSession().on('change', function(e) {
-            if ($('#btnAuto').hasClass('btn-primary')) {
+            if (autoRun) {
                 runSetup();
             }
         });
 
         editorHTML = ace.edit('editorHTML');
+        editorHTML.$blockScrolling = Infinity;
         editorHTML.setTheme('ace/theme/crimson_editor');
         editorHTML.setShowPrintMargin(false);
         editorHTML.getSession().setMode('ace/mode/html');
         editorHTML.setOption('enableBasicAutocompletion', true);
         editorHTML.getSession().on('change', function(e) {
-            if ($('#btnAuto').hasClass('btn-primary')) {
+            if (autoRun) {
                 runSetup();
             }
         });
 
-        $('#preview')
-        .attr({scrolling: 'no'})
-        .load(function() {
-            $(this).css('height', $(this).contents().height() + 'px');
-        })
+        // Resize Preview Pane Based On Content
+        document.getElementById('preview')
+            .addEventListener('load', function() {
+                this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
+            });
 
         // Connect Buttons
-        $('#btnRun').on('click', function(e) {
-            e.preventDefault();
-            runSetup();
-        });
-        $('#btnAuto').on('click', function(e) {
-            e.preventDefault();
-            $(this).toggleClass('btn-primary');
-            $(this).toggleClass('btn-default');
-            runSetup();
-        });
-        $('a.example').on('click', function(e) {
-            e.preventDefault();
-            loadScript($(this).data('target'));
-        });
+        document.getElementById('btnRun')
+            .addEventListener('click', function(e) {
+                e.preventDefault();
+                runSetup();
+            });
+        document.getElementById('btnAuto')
+            .addEventListener('click', function(e) {
+                e.preventDefault();
+                autoRun = !autoRun;
 
-        var target =  document.URL.match(/[?&]example=([^&]*)/i) || ['','barChart'];
+                if (autoRun) {
+                    this.className = this.className.replace('btn-default', 'btn-primary');
+                } else {
+                    this.className = this.className.replace('btn-primary', 'btn-default');
+                }
+                runSetup();
+            });
+
+        // Wire Up Examples
+        var examples = document.querySelectorAll('a.example');
+        var exampleCallback = function(e) {
+            e.preventDefault();
+            loadScript(this.getAttribute('data-target'));
+        };
+        for (var i = 0; i<examples.length; i++) {
+            examples[i].addEventListener('click', exampleCallback);
+        }
+
+        var target = document.URL.match(/[?&]example=([^&]*)/i) || ['', 'barChart'];
         loadScript(target[1]);
-        $('#main').toggleClass('hidden', false);
     });
 }());
