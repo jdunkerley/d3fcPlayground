@@ -21,6 +21,8 @@
         var currentJS = editor.getSession().getValue();
         if (currentHTML === 'Loading ...' || currentJS === 'Loading ...') { return; }
 
+        currentHTML = currentHTML.replace('<body>', '<body style="margin:0">')
+
         // Find reference to script
         var startIndex = currentHTML.indexOf('<script src="' + scriptTarget + '"');
         var endIndex = currentHTML.indexOf('</script>', startIndex);
@@ -75,7 +77,7 @@
         editor.getSession().setMode('ace/mode/javascript');
         editor.setOption('enableBasicAutocompletion', true);
         editor.getSession().on('change', function(e) {
-            if ($('#btnAuto').hasClass('active')) {
+            if ($('#btnAuto').hasClass('btn-primary')) {
                 runSetup();
             }
         });
@@ -86,15 +88,16 @@
         editorHTML.getSession().setMode('ace/mode/html');
         editorHTML.setOption('enableBasicAutocompletion', true);
         editorHTML.getSession().on('change', function(e) {
-            if ($('#btnAuto').hasClass('active')) {
+            if ($('#btnAuto').hasClass('btn-primary')) {
                 runSetup();
             }
         });
 
-
-        // Crimson Editor (light)
-        // Cobalt (blue)
-        // Teminal (dark)
+        $('#preview')
+        .attr({scrolling: 'no'})
+        .load(function() {
+            $(this).css('height', $(this).contents().height() + 'px');
+        })
 
         // Connect Buttons
         $('#btnRun').on('click', function(e) {
@@ -103,27 +106,14 @@
         });
         $('#btnAuto').on('click', function(e) {
             e.preventDefault();
-            $(this).toggleClass('active');
+            $(this).toggleClass('btn-primary');
+            $(this).toggleClass('btn-default');
             runSetup();
         });
         $('a.example').on('click', function(e) {
             e.preventDefault();
             loadScript($(this).data('target'));
         });
-        $('a.theme').on('click', function(e) {
-            e.preventDefault();
-            var theme = $(this).data('target');
-            editor.setTheme('ace/theme/' + theme);
-            editorHTML.setTheme('ace/theme/' + theme);
-            if (window.localStorage) {
-                window.localStorage.setItem('theme', theme)
-            }
-        });
-
-        if (window.localStorage && window.localStorage.getItem('theme')) {
-            editor.setTheme('ace/theme/' + window.localStorage.getItem('theme'));
-            editorHTML.setTheme('ace/theme/' + window.localStorage.getItem('theme'));
-        }
 
         var target =  document.URL.match(/[?&]example=([^&]*)/i) || ['','barChart'];
         loadScript(target[1]);
