@@ -1,6 +1,6 @@
 var quandl = fc.data.feed.quandl()
 //    .apiKey(<Enter your key>) // Enter your key here
-    .start(new Date('2015-01-01'))
+    .start(new Date('2015-06-01'))
     .database('YAHOO')
     .dataset('DATA');
 
@@ -14,8 +14,8 @@ function createSeries(sign, minValue, maxValue, domainMax) {
             sel.enter()
                 .style('fill', d3.hsl(
                     sign === -1 ? 0 : 240,
-                    maxValue / domainMax,
-                    0.5
+                    1 - maxValue / domainMax,
+                    1 - maxValue / domainMax
                 ));
         });
 }
@@ -26,7 +26,7 @@ quandl(function(error, data) {
         d.pctReturn = (d['adjusted Close'] / arr[0]['adjusted Close'] - 1) * 100;
     });
 
-    var step = 20;
+    var step = 10;
 
     // Get Domain
     var domain = fc.util.extent(data, 'pctReturn');
