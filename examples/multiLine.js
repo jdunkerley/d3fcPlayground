@@ -12,11 +12,9 @@ var chart = fc.chart.linearTimeSeries()
     .yDomain([0, 50]);
 
 var line = fc.series.line();
-var line2 = fc.series.line().yValue(function(d) { return d.close * 1.1; });
-var line3 = fc.series.line().yValue(function(d) { return d.close * 1.2; });
 
 var multi = fc.series.multi()
-    .series([fc.annotation.gridline(), line, line2, line3]);
+    .series([fc.annotation.gridline(), line]);
 
 chart.plotArea(multi);
 

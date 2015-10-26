@@ -43,7 +43,7 @@
         setIFrame('<HTML><Body>Loading ...</Body></HTML>');
 
         $.ajax({
-            url: 'examples/' + scriptTarget,
+            url: '/examples/' + scriptTarget,
             success: function(jsCode) {
                 editor.getSession().setValue(jsCode);
                 editor.setReadOnly(false);
@@ -51,9 +51,7 @@
             },
             dataType: 'html'});
 
-        $.get('examples/' + scriptName + '.html', function(html) {
-            html = html.replace(/\$version/g, '2.1.1');
-
+        $.get('/examples/' + scriptName + '.html', function(html) {
             // Switch to local d3fc if available
             if (useLocalD3FC) {
                 html = html.replace(/"https:([^"])*\/d3fc.min.css"/, '"http://localhost:8000/assets/d3fc.css"');
@@ -70,8 +68,7 @@
         ace.require('ace/ext/language_tools');
 
         editor = ace.edit('editor');
-        editor.setTheme('ace/theme/crimson_editor');
-        editor.setShowPrintMargin(false);
+        editor.setTheme('ace/theme/cobalt');
         editor.getSession().setMode('ace/mode/javascript');
         editor.setOption('enableBasicAutocompletion', true);
         editor.getSession().on('change', function(e) {
@@ -81,8 +78,7 @@
         });
 
         editorHTML = ace.edit('editorHTML');
-        editorHTML.setTheme('ace/theme/crimson_editor');
-        editorHTML.setShowPrintMargin(false);
+        editorHTML.setTheme('ace/theme/cobalt');
         editorHTML.getSession().setMode('ace/mode/html');
         editorHTML.setOption('enableBasicAutocompletion', true);
         editorHTML.getSession().on('change', function(e) {
@@ -91,10 +87,6 @@
             }
         });
 
-
-        // Crimson Editor (light)
-        // Cobalt (blue)
-        // Teminal (dark)
 
         // Connect Buttons
         $('#btnRun').on('click', function(e) {
@@ -110,20 +102,6 @@
             e.preventDefault();
             loadScript($(this).data('target'));
         });
-        $('a.theme').on('click', function(e) {
-            e.preventDefault();
-            var theme = $(this).data('target');
-            editor.setTheme('ace/theme/' + theme);
-            editorHTML.setTheme('ace/theme/' + theme);
-            if (window.localStorage) {
-                window.localStorage.setItem('theme', theme)
-            }
-        });
-
-        if (window.localStorage && window.localStorage.getItem('theme')) {
-            editor.setTheme('ace/theme/' + window.localStorage.getItem('theme'));
-            editorHTML.setTheme('ace/theme/' + window.localStorage.getItem('theme'));
-        }
 
         var target =  document.URL.match(/[?&]example=([^&]*)/i) || ['','barChart'];
         loadScript(target[1]);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title></title>
@@ -13,78 +14,81 @@
             height: 700px;
             width: 100%;
         }
+
+        iframe {
+            border: none;
+        }
     </style>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://d3fc.io/styles.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
+
 <body>
-    <nav class="navbar navbar-default">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#toolbar">
-                <span class="sr-only">Toggle toolbar</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#"><i class="fa fa-area-chart"></i> D3FC</a>
-        </div>
+    <div class="content">
+        <nav class="navbar navbar-inverse">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-header" href="http://d3fc.io/">
+                        <img class="navbar-logo" alt="d3fc" src="http://d3fc.io/images/logo.svg">
+                    </a>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#toolbar">
+                        <span class="sr-only">Toggle toolbar</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="toolbar">
-            <ul class="nav navbar-nav">
-                <li id="btnRun"><a href=""><i class="fa fa-play"></i> Run</a></li>
-                <li id="btnAuto"><a href=""><i class="fa fa-forward"></i> AutoRun</a></li>
-                <!--<li id="btnTidyUp"><a href=""><span class="glyphicon glyphicon-flash" aria-hidden="true"></span> TidyUp</a></li>-->
-                <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Examples <b class="caret"></b></a>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="#" class="example" data-target="barChart"><i class="fa fa-bar-chart"></i> Bar Chart</a></li>
-                        <li><a href="#" class="example" data-target="multiLine"><i class="fa fa-line-chart"></i> Multiple Lines</a></li>
-                        <!--<li><a href="#" class="example" data-target="lineChart">Line Chart</a></li>
-                        <li><a href="#" class="example" data-target="candlestick">Candlestick</a></li>-->
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://d3fc.io#quick-start">Quick Start</a></li>
+                        <li><a href="http://d3fc.io/components/introduction/1-getting-started.html">Documentation</a></li>
+                        <li><a href="http://d3fc.io/examples">Examples</a></li>
+                        <li class="active"><a href="./">Playground</a></li>
+                        <li><a href="https://github.com/ScottLogic/d3fc">GitHub</a></li>
                     </ul>
-                </li>
-                <li class="dropdown pull-right">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">Editor Theme <b class="caret"></b></a>
-                    <ul role="menu" class="dropdown-menu">
-                        <li><a href="#" class="theme" data-target="crimson_editor">Light</a></li>
-                        <li><a href="#" class="theme" data-target="terminal">Dark</a></li>
-                        <li><a href="#" class="theme" data-target="cobalt">Blue</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </nav>
+                </div>
 
-    <div class="container-fluid" id="main" class="hidden">
-        <div class="row">
-            <div class="col-md-6 col-md-push-6">
-                <iframe id="preview">
-                </iframe>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <!-- /.navbar-collapse -->
             </div>
-            <div class="col-md-6 col-md-pull-6">
-                <div class="editorContainer">
-                    <h3>HTML</h3>
-                    <div id="editorHTML" class="editors">
-Loading ...
+        </nav>
+
+        <div class="container" id="main" class="hidden">
+            <div class="row">
+                <div class="col-md-5 col-md-push-7">
+                    <h3>Preview</h3>
+                    <iframe id="preview">
+                    </iframe>
+                </div>
+                <div class="col-md-7 col-md-pull-5">
+                    <div class="editorContainer">
+                        <div>
+                            <h3>HTML</h3>
+                            <button id="btnRun"><i class="fa fa-play"></button>
+                            <button id="btnAuto"><i class="fa fa-forward"></i> AutoRun</button>
+                        </div>
+                        <div id="editorHTML" class="editors">
+                            Loading ...
+                        </div>
+                    </div>
+                    <div class="editorContainer">
+                        <h3>JavaScript</h3>
+                        <div id="editor" class="editors">
+                            Loading ...
+                        </div>
+                        <div>
+                        </div>
                     </div>
                 </div>
-                <div class="editorContainer">
-                    <h3>JavaScript</h3>
-                    <div id="editor" class="editors">
-Loading ...
-                    </div>
-                <div>
             </div>
-        </div>
-    </div>
 
-    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="ace/ace.js"></script>
-    <script src="ace/ext-language_tools.js"></script>
-    <script src="index.js"></script>
+            <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+            <script src="ace/ace.js"></script>
+            <script src="ace/ext-language_tools.js"></script>
+            <script src="index.js"></script>
 </body>
+
 </html>
