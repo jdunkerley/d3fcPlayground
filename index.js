@@ -37,6 +37,18 @@
         setIFrame(merged);
     }
 
+    function autoRunToggle() {
+        autoRun = !autoRun;
+
+        var btn = document.getElementById('btnAuto');
+        if (autoRun) {
+            btn.className = btn.className.replace('btn-default', 'btn-primary');
+            runSetup();
+        } else {
+            btn.className = btn.className.replace('btn-primary', 'btn-default');
+        }
+    }
+
     function loadScript(scriptName) {
         scriptTarget = scriptName + '.js';
 
@@ -72,32 +84,28 @@
             });
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        ace.require('ace/ext/language_tools');
-
-        editor = ace.edit('editor');
+    function setUpEditor(divId) {
+        var editor = ace.edit(divId);
         editor.$blockScrolling = Infinity;
         editor.setTheme('ace/theme/crimson_editor');
         editor.setShowPrintMargin(false);
-        editor.getSession().setMode('ace/mode/javascript');
         editor.setOption('enableBasicAutocompletion', true);
         editor.getSession().on('change', function(e) {
             if (autoRun) {
                 runSetup();
             }
         });
+        return editor;
+    }
 
-        editorHTML = ace.edit('editorHTML');
-        editorHTML.$blockScrolling = Infinity;
-        editorHTML.setTheme('ace/theme/crimson_editor');
-        editorHTML.setShowPrintMargin(false);
+    document.addEventListener('DOMContentLoaded', function() {
+        ace.require('ace/ext/language_tools');
+
+        editor = setUpEditor('editor');
+        editor.getSession().setMode('ace/mode/javascript');
+
+        editorHTML = setUpEditor('editorHTML');
         editorHTML.getSession().setMode('ace/mode/html');
-        editorHTML.setOption('enableBasicAutocompletion', true);
-        editorHTML.getSession().on('change', function(e) {
-            if (autoRun) {
-                runSetup();
-            }
-        });
 
         // Resize Preview Pane Based On Content
         document.getElementById('preview')
@@ -114,14 +122,7 @@
         document.getElementById('btnAuto')
             .addEventListener('click', function(e) {
                 e.preventDefault();
-                autoRun = !autoRun;
-
-                if (autoRun) {
-                    this.className = this.className.replace('btn-default', 'btn-primary');
-                } else {
-                    this.className = this.className.replace('btn-primary', 'btn-default');
-                }
-                runSetup();
+                autoRunToggle();
             });
 
         // Wire Up Examples
